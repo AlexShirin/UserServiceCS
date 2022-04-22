@@ -14,12 +14,12 @@ export class AppComponent implements OnInit {
     @ViewChild('editTemplate', {static: false}) editTemplate: TemplateRef<any>|undefined;
 
     editedUser: User|null = null;
-    users: Array<User>;
+    userList: Array<User>;
     isNewRecord: boolean = false;
     statusMessage: string = "";
 
-    constructor(private serv: UserService) {
-        this.users = new Array<User>();
+    constructor(private service: UserService) {
+        this.userList = new Array<User>();
     }
 
     ngOnInit() {
@@ -28,14 +28,14 @@ export class AppComponent implements OnInit {
 
     //загрузка пользователей
     private loadUsers() {
-        this.serv.getUsers().subscribe((data: Array<User>) => {
-            this.users = data;
+        this.service.getUsers().subscribe((data: Array<User>) => {
+            this.userList = data;
         });
     }
     // добавление пользователя
     addUser() {
         this.editedUser = new User(0,"",0);
-        this.users.push(this.editedUser);
+        this.userList.push(this.editedUser);
         this.isNewRecord = true;
     }
 
@@ -55,7 +55,7 @@ export class AppComponent implements OnInit {
     saveUser() {
         if (this.isNewRecord) {
             // добавляем пользователя
-            this.serv.createUser(this.editedUser as User).subscribe(data => {
+            this.service.createUser(this.editedUser as User).subscribe(data => {
                 this.statusMessage = 'Данные успешно добавлены',
                     this.loadUsers();
             });
@@ -63,7 +63,7 @@ export class AppComponent implements OnInit {
             this.editedUser = null;
         } else {
             // изменяем пользователя
-            this.serv.updateUser(this.editedUser as User).subscribe(data => {
+            this.service.updateUser(this.editedUser as User).subscribe(data => {
                 this.statusMessage = 'Данные успешно обновлены',
                     this.loadUsers();
             });
@@ -74,14 +74,14 @@ export class AppComponent implements OnInit {
     cancel() {
         // если отмена при добавлении, удаляем последнюю запись
         if (this.isNewRecord) {
-            this.users.pop();
+            this.userList.pop();
             this.isNewRecord = false;
         }
         this.editedUser = null;
     }
     // удаление пользователя
     deleteUser(user: User) {
-        this.serv.deleteUser(String(user._id)).subscribe(data => {
+        this.service.deleteUser(String(user._id)).subscribe(data => {
             this.statusMessage = 'Данные успешно удалены',
                 this.loadUsers();
         });

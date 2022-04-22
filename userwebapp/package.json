@@ -1,8 +1,8 @@
 {
   "name": "gridapp",
   "version": "1.0.0",
-  "description": "Grid Angular 13 Project",
-  "author": "Eugene Popov metanit.com",
+  "description": "Angular project",
+  "author": "asd",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

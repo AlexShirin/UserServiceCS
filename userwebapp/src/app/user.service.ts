@@ -5,7 +5,7 @@ import {User} from './user';
 @Injectable()
 export class UserService{
 
-    private url = "http://localhost:7193/api/users";
+    private url = "https://localhost:7059/api/users";
     constructor(private http: HttpClient){ }
 
     getUsers(){
@@ -16,12 +16,14 @@ export class UserService{
         const myHeaders = new HttpHeaders().set("Content-Type", "application/json");
         return this.http.post<User>(this.url, JSON.stringify(user), {headers: myHeaders});
     }
+    
     updateUser(user: User) {
         const myHeaders = new HttpHeaders().set("Content-Type", "application/json");
         return this.http.put<User>(this.url, JSON.stringify(user), {headers:myHeaders});
     }
-    deleteUser(id: string){
-
+    
+    deleteUser(id: string)
+    {
         return this.http.delete<User>(this.url + '/' + id);
     }
 }

@@ -11,7 +11,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let user of users">
+    <tr *ngFor="let user of userList">
         <ng-template [ngTemplateOutlet]="loadTemplate(user)"
                      [ngTemplateOutletContext]="{ $implicit: user}">
         </ng-template>
