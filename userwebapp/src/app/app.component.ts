@@ -1,5 +1,6 @@
 import {TemplateRef, ViewChild} from '@angular/core';
 import {Component, OnInit} from '@angular/core';
+import {Observable, map} from 'rxjs';
 import {User} from './user';
 import {UserService} from './user.service';
 
@@ -8,6 +9,7 @@ import {UserService} from './user.service';
     templateUrl: './app.component.html',
     providers: [UserService]
 })
+
 export class AppComponent implements OnInit {
     //типы шаблонов
     @ViewChild('readOnlyTemplate', {static: false}) readOnlyTemplate: TemplateRef<any>|undefined;
@@ -15,11 +17,13 @@ export class AppComponent implements OnInit {
 
     editedUser: User|null = null;
     userList: Array<User>;
+    // userList: Observable<Array<User>>;
     isNewRecord: boolean = false;
     statusMessage: string = "";
 
     constructor(private service: UserService) {
         this.userList = new Array<User>();
+        // this.userList = new Observable<Array<User>>();
     }
 
     ngOnInit() {
@@ -27,11 +31,12 @@ export class AppComponent implements OnInit {
     }
 
     //загрузка пользователей
-    private loadUsers() {
-        this.service.getUsers().subscribe((data: Array<User>) => {
-            this.userList = data;
-        });
+    private async loadUsers() {
+        this.service.getUsers().subscribe((data: Array<User>) => this.userList = data); 
+        // this.service.getUsers().pipe(map((data: Array<User>) => this.userList = data));
+        // this.userList = this.service.getUsers();
     }
+    
     // добавление пользователя
     addUser() {
         this.editedUser = new User(0,"",0);
@@ -43,6 +48,7 @@ export class AppComponent implements OnInit {
     editUser(user: User) {
         this.editedUser = new User(user._id, user.name, user.age);
     }
+    
     // загружаем один из двух шаблонов
     loadTemplate(user: User) {
         if (this.editedUser && this.editedUser._id === user._id) {
@@ -51,6 +57,7 @@ export class AppComponent implements OnInit {
             return this.readOnlyTemplate;
         }
     }
+    
     // сохраняем пользователя
     saveUser() {
         if (this.isNewRecord) {
@@ -70,6 +77,7 @@ export class AppComponent implements OnInit {
             this.editedUser = null;
         }
     }
+    
     // отмена редактирования
     cancel() {
         // если отмена при добавлении, удаляем последнюю запись
@@ -79,6 +87,7 @@ export class AppComponent implements OnInit {
         }
         this.editedUser = null;
     }
+    
     // удаление пользователя
     deleteUser(user: User) {
         this.service.deleteUser(String(user._id)).subscribe(data => {
